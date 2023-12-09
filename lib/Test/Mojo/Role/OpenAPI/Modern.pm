@@ -35,6 +35,8 @@ __END__
 
 =pod
 
+=for stopwords OpenAPI openapi
+
 =head1 SYNOPSIS
 
   my $openapi = OpenAPI::Modern->new(
