@@ -1,28 +1,173 @@
 =pod
 
+=encoding UTF-8
+
+=head1 NAME
+
+Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenAPI document and parser
+
+=head1 VERSION
+
+version 0.001
+
 =head1 SYNOPSIS
 
-  use Test::Mojo::Role::OpenAPI::Modern;
+  my $openapi = OpenAPI::Modern->new(
+    openapi_uri => '/api',
+    openapi_schema => YAML::PP->new(boolean => 'JSON::PP')->load_string(<<'YAML'));
+---
+  openapi: 3.1.0
+  info:
+    title: Test API
+    version: 1.2.3
+  paths:
+    /foo/{foo_id}:
+      parameters:
+      - name: foo_id
+        in: path
+        required: true
+        schema:
+          pattern: ^[a-z]+$
+      post:
+        operationId: my_foo_request
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema: {}
+        responses:
+          200:
+            description: success
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required: [ status ]
+                  properties:
+                    status:
+                      const: ok
+  YAML
 
-  ...
+  my $t = Test::Mojo->new('MyApp')
+    ->with_roles('+OpenAPI::Modern')
+    ->openapi($openapi);
+
+  $t->post_ok('/foo/hello')
+    ->status_is(200)
+    ->json_is('/status', 'ok')
+    ->request_valid
+    ->response_valid;
 
 =head1 DESCRIPTION
 
-...
+Provides methods on a L<Test::Mojo> object suitable for using L<OpenAPI::Modern> to validate the
+request and response.
 
-=head1 FUNCTIONS/METHODS
+=for stopwords OpenAPI openapi
 
-=head2 foo
+=head1 ACCESSORS/METHODS
 
-...
+=head2 openapi
 
-=head1 ACKNOWLEDGEMENTS
+The L<OpenAPI::Modern> object to use for validation. This object stores the OpenAPI schema used to
+describe requests and responses in your application, as well as the underlying
+L<JSON::Schema::Modern> object used for the validation itself. See that documentation for
+information on how to customize your validation and provide the specification document.
 
-...
+=head2 request_valid
+
+Passes C<< $t->tx->req >> to L<OpenAPI::Modern/validate_request>, as in
+L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean test result.
+
+=head2 response_valid
+
+Passes C<< $t->tx->res >> to L<OpenAPI::Modern/validate_response> as in
+L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean test result.
+
+=head1 FUTURE FEATURES
+
+Lots of features are still to come, including:
+
+=over 4
+
+=item *
+
+C<request_invalid>, C<response_invalid> test methods, including a mechanism for providing the expected validation error(s)
+
+=item *
+
+stashing the validation results on the test object for reuse or diagnostic printing
+
+=item *
+
+integration with L<Mojolicious::Plugin::OpenAPI::Modern>, including sharing the openapi object and customization options that are set in the application
+
+=back
 
 =head1 SEE ALSO
 
-=for :list
-* L<foo>
+=over 4
+
+=item *
+
+L<Mojolicious::Plugin::OpenAPI::Modern>
+
+=item *
+
+L<Test::Mojo>
+
+=item *
+
+L<Test::Mojo::WithRoles>
+
+=item *
+
+L<OpenAPI::Modern>
+
+=item *
+
+L<JSON::Schema::Modern::Document::OpenAPI>
+
+=item *
+
+L<JSON::Schema::Modern>
+
+=item *
+
+L<https://json-schema.org>
+
+=item *
+
+L<https://www.openapis.org/>
+
+=item *
+
+L<https://learn.openapis.org/>
+
+=item *
+
+L<https://spec.openapis.org/oas/v3.1.0>
+
+=back
+
+=head1 SUPPORT
+
+Bugs may be submitted through L<https://github.com/karenetheridge/Test-Mojo-Role-OpenAPI-Modern/issues>.
+
+There is also an irc channel available for users of this distribution, at
+L<C<#mojo> on C<irc.libera.chat>|irc://irc.libera.chat/#mojo>.
+
+I am also usually active on irc, as 'ether' at C<irc.perl.org> and C<irc.libera.chat>.
+
+=head1 AUTHOR
+
+Karen Etheridge <ether@cpan.org>
+
+=head1 COPYRIGHT AND LICENCE
+
+This software is copyright (c) 2023 by Karen Etheridge.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
