@@ -16,6 +16,7 @@ use YAML::PP 0.005;
 use Mojo::URL;
 use OpenAPI::Modern;
 use Mojolicious;
+use Storable 'dclone';
 
 our $openapi_preamble = <<'YAML';
 ---

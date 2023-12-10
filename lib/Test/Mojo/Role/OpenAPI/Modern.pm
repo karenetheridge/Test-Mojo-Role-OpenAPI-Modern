@@ -17,7 +17,22 @@ use namespace::clean;
 
 use Mojo::Base -role, -signatures;
 
-has 'openapi' => sub { die 'openapi object required' };
+has 'openapi' => sub ($self) {
+  # try to construct our own using provided configs
+  if (my $config = $self->app->config->{openapi}) {
+    return $config->{openapi_obj} if $config->{openapi_obj};
+
+    if (my $args = eval {
+        +require Mojolicious::Plugin::OpenAPI::Modern;
+        Mojolicious::Plugin::OpenAPI::Modern->VERSION('0.007');
+        Mojolicious::Plugin::OpenAPI::Modern::_process_configs($config);
+      }) {
+      return OpenAPI::Modern->new($args);
+    }
+  }
+
+  die 'openapi object or configs required';
+};
 
 sub request_valid ($self, $desc = 'request is valid') {
   my $result = $self, $self->openapi->validate_request($self->tx->req);
@@ -75,7 +90,7 @@ __END__
                       const: ok
   YAML
 
-  my $t = Test::Mojo->new('MyApp')
+  my $t = Test::Mojo->new('MyApp', { ... })
     ->with_roles('+OpenAPI::Modern')
     ->openapi($openapi);
 
@@ -98,6 +113,9 @@ The L<OpenAPI::Modern> object to use for validation. This object stores the Open
 describe requests and responses in your application, as well as the underlying
 L<JSON::Schema::Modern> object used for the validation itself. See that documentation for
 information on how to customize your validation and provide the specification document.
+
+If not provided, the object is constructed using configuration values passed to the application
+under the C<openapi> key (see L<Test::Mojo/new>), as for L<Mojolicious::Plugin::OpenAPI::Modern>.
 
 =head2 request_valid
 

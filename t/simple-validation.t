@@ -25,4 +25,25 @@ subtest 'openapi object on the test itself' => sub {
     ->response_valid;
 };
 
+subtest 'openapi object is constructed using provided configs' => sub {
+  my $schema = dclone($::schema);
+  $schema->{info}{title} = 'Test API using overridden configs';
+
+  my $t = Test::Mojo->new($::app, {
+      openapi => {
+        schema => $schema,
+      }
+    })
+    ->with_roles('+OpenAPI::Modern');
+
+  is($t->openapi->document_get('/info/title'), 'Test API using overridden configs',
+    'test role constructs its own OpenAPI::Modern object');
+
+  $t->post_ok('/foo/hello')
+    ->status_is(200)
+    ->json_is('/status', 'ok')
+    ->request_valid
+    ->response_valid;
+};
+
 done_testing;
