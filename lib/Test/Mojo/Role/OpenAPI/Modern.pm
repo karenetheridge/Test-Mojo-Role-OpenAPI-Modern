@@ -18,7 +18,12 @@ use namespace::clean;
 use Mojo::Base -role, -signatures;
 
 has 'openapi' => sub ($self) {
-  # try to construct our own using provided configs
+  # use the plugin's object, if the plugin is being used
+  # FIXME: we should be calling $self->app->$_call_if_can, but can() isn't behaving
+  my $openapi = eval { $self->app->openapi };
+  return $openapi if $openapi;
+
+  # otherwise try to construct our own using provided configs
   if (my $config = $self->app->config->{openapi}) {
     return $config->{openapi_obj} if $config->{openapi_obj};
 
@@ -115,7 +120,8 @@ L<JSON::Schema::Modern> object used for the validation itself. See that document
 information on how to customize your validation and provide the specification document.
 
 If not provided, the object is constructed using configuration values passed to the application
-under the C<openapi> key (see L<Test::Mojo/new>), as for L<Mojolicious::Plugin::OpenAPI::Modern>.
+under the C<openapi> key (see L<Test::Mojo/new>), as for L<Mojolicious::Plugin::OpenAPI::Modern>,
+or re-uses the object from the application itself if that plugin is applied.
 
 =head2 request_valid
 
