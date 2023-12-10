@@ -5,7 +5,7 @@ package Test::Mojo::Role::OpenAPI::Modern;
 # ABSTRACT: Test::Mojo role providing access to an OpenAPI document and parser
 # KEYWORDS: validation evaluation JSON Schema OpenAPI Swagger HTTP request response
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 use 5.020;  # for fc, unicode_strings features
 use strictures 2;
