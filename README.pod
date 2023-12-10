@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
@@ -48,7 +48,7 @@ version 0.001
                       const: ok
   YAML
 
-  my $t = Test::Mojo->new('MyApp')
+  my $t = Test::Mojo->new('MyApp', { ... })
     ->with_roles('+OpenAPI::Modern')
     ->openapi($openapi);
 
@@ -73,6 +73,10 @@ The L<OpenAPI::Modern> object to use for validation. This object stores the Open
 describe requests and responses in your application, as well as the underlying
 L<JSON::Schema::Modern> object used for the validation itself. See that documentation for
 information on how to customize your validation and provide the specification document.
+
+If not provided, the object is constructed using configuration values passed to the application
+under the C<openapi> key (see L<Test::Mojo/new>), as for L<Mojolicious::Plugin::OpenAPI::Modern>,
+or re-uses the object from the application itself if that plugin is applied.
 
 =head2 request_valid
 

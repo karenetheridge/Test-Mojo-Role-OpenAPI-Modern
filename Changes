@@ -1,6 +1,6 @@
 Revision history for Test-Mojo-Role-OpenAPI-Modern
 
-{{$NEXT}}
+0.002     2023-12-10 06:27:23Z
           - now able to use the OpenAPI::Modern object from
             Mojolicious::Plugin::OpenAPI::Modern, if that plugin is in use on
             the application, or construct one using provided configuration
