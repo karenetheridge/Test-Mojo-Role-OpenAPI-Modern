@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.002
+version 0.003
 
 =head1 SYNOPSIS
 
@@ -48,8 +48,9 @@ version 0.002
                       const: ok
   YAML
 
-  my $t = Test::Mojo->new('MyApp', { ... })
+  my $t = Test::Mojo
     ->with_roles('+OpenAPI::Modern')
+    ->new('MyApp', { ... })
     ->openapi($openapi);
 
   $t->post_ok('/foo/hello')
@@ -87,6 +88,20 @@ L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean te
 
 Passes C<< $t->tx->res >> to L<OpenAPI::Modern/validate_response> as in
 L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean test result.
+
+=head2 request_validation_result
+
+Returns the L<JSON::Schema::Modern::Result> object for the validation result for the last request,
+or calculates it if not already available.
+
+Does not emit a test result.
+
+=head2 response_validation_result
+
+Returns the L<JSON::Schema::Modern::Result> object for the validation result for the last response,
+or calculates it if not already available.
+
+Does not emit a test result.
 
 =head1 FUTURE FEATURES
 
