@@ -39,15 +39,37 @@ has 'openapi' => sub ($self) {
   die 'openapi object or configs required';
 };
 
+sub _openapi_stash ($self, @data) { Mojo::Util::_stash(_openapi_stash => $self, @data) }
+
+after _request_ok => sub ($self, @args) {
+  $self->{_openapi_stash} = {};
+};
+
 sub request_valid ($self, $desc = 'request is valid') {
-  my $result = $self->openapi->validate_request($self->tx->req);
-  return $self->test('ok', $result, $desc);
+  return $self->test('ok', $self->request_validation_result, $desc);
 }
 
 sub response_valid ($self, $desc = 'response is valid') {
+  return $self->test('ok', $self->response_validation_result, $desc);
+}
+
+sub request_validation_result ($self) {
+  my $result = $self->_openapi_stash('request_result');
+  return $result if $result;
+
+  $result = $self->openapi->validate_request($self->tx->req);
+  $self->_openapi_stash(request_result => $result);
+  return $result;
+}
+
+sub response_validation_result ($self) {
+  my $result = $self->_openapi_stash('response_result');
+  return $result if $result;
+
   my $options = { request => $self->tx->req };
-  my $result = $self->openapi->validate_response($self->tx->res, $options);
-  return $self->test('ok', $result, $desc);
+  $result = $self->openapi->validate_response($self->tx->res, $options);
+  $self->_openapi_stash(response_result => $result);
+  return $result;
 }
 
 1;
@@ -133,6 +155,20 @@ L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean te
 
 Passes C<< $t->tx->res >> to L<OpenAPI::Modern/validate_response> as in
 L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean test result.
+
+=head2 request_validation_result
+
+Returns the L<JSON::Schema::Modern::Result> object for the validation result for the last request,
+or calculates it if not already available.
+
+Does not emit a test result.
+
+=head2 response_validation_result
+
+Returns the L<JSON::Schema::Modern::Result> object for the validation result for the last response,
+or calculates it if not already available.
+
+Does not emit a test result.
 
 =head1 FUTURE FEATURES
 

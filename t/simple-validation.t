@@ -13,6 +13,7 @@ use open ':std', ':encoding(UTF-8)'; # force stdin, stdout, stderr into utf8
 use lib 't/lib';
 use Helper;
 use Test::Needs;
+use Scalar::Util 'refaddr';
 
 subtest 'openapi object on the test itself' => sub {
   my $t = Test::Mojo
@@ -25,6 +26,17 @@ subtest 'openapi object on the test itself' => sub {
     ->json_is('/status', 'ok')
     ->request_valid
     ->response_valid;
+
+  my $request_result = $t->request_validation_result;
+  $t->request_valid;
+  is(refaddr($request_result), refaddr($t->request_validation_result),
+    'same result object is returned the second time');
+
+  $t->post_ok('/foo/hello', json => {});
+  isnt(refaddr($request_result), refaddr(my $new_request_result = $t->request_validation_result),
+    'different result object is returned for a different request');
+  is(refaddr($new_request_result), refaddr($t->request_validation_result),
+    'same result object is returned for the second request again');
 };
 
 subtest 'openapi object is constructed using provided configs' => sub {

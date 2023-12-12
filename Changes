@@ -2,6 +2,7 @@ Revision history for Test-Mojo-Role-OpenAPI-Modern
 
 {{$NEXT}}
           - fix failing test due to missing optional prereq
+          - new methods request_validation_result, response_validation_result
 
 0.002     2023-12-10 06:27:23Z
           - now able to use the OpenAPI::Modern object from
