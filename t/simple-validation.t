@@ -12,6 +12,7 @@ use open ':std', ':encoding(UTF-8)'; # force stdin, stdout, stderr into utf8
 
 use lib 't/lib';
 use Helper;
+use Test::Needs;
 
 subtest 'openapi object on the test itself' => sub {
   my $t = Test::Mojo->new($::app)
@@ -26,6 +27,8 @@ subtest 'openapi object on the test itself' => sub {
 };
 
 subtest 'openapi object is constructed using provided configs' => sub {
+  test_needs 'Mojolicious::Plugin::OpenAPI::Modern';
+
   my $schema = dclone($::schema);
   $schema->{info}{title} = 'Test API using overridden configs';
 
