@@ -95,8 +95,9 @@ __END__
                       const: ok
   YAML
 
-  my $t = Test::Mojo->new('MyApp', { ... })
+  my $t = Test::Mojo
     ->with_roles('+OpenAPI::Modern')
+    ->new('MyApp', { ... })
     ->openapi($openapi);
 
   $t->post_ok('/foo/hello')

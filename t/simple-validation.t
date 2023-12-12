@@ -15,8 +15,9 @@ use Helper;
 use Test::Needs;
 
 subtest 'openapi object on the test itself' => sub {
-  my $t = Test::Mojo->new($::app)
+  my $t = Test::Mojo
     ->with_roles('+OpenAPI::Modern')
+    ->new($::app)
     ->openapi($::openapi);
 
   $t->post_ok('/foo/hello', json => {})
@@ -32,12 +33,13 @@ subtest 'openapi object is constructed using provided configs' => sub {
   my $schema = dclone($::schema);
   $schema->{info}{title} = 'Test API using overridden configs';
 
-  my $t = Test::Mojo->new($::app, {
+  my $t = Test::Mojo
+    ->with_roles('+OpenAPI::Modern')
+    ->new($::app, {
       openapi => {
         schema => $schema,
       }
-    })
-    ->with_roles('+OpenAPI::Modern');
+    });
 
   is($t->openapi->document_get('/info/title'), 'Test API using overridden configs',
     'test role constructs its own OpenAPI::Modern object');

@@ -27,8 +27,9 @@ $::app->config({
 $::app->plugin('OpenAPI::Modern', $::app->config->{openapi});
 
 subtest 'openapi object from the Mojo plugin' => sub {
-  my $t = Test::Mojo->new($::app)
-    ->with_roles('+OpenAPI::Modern');
+  my $t = Test::Mojo
+    ->with_roles('+OpenAPI::Modern')
+    ->new($::app);
 
   is($t->app->openapi->document_get('/info/title'), 'Test API using config from the plugin',
     'openapi object on the application is constructed correctly');
