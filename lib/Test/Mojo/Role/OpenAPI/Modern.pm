@@ -40,7 +40,7 @@ has 'openapi' => sub ($self) {
 };
 
 sub request_valid ($self, $desc = 'request is valid') {
-  my $result = $self, $self->openapi->validate_request($self->tx->req);
+  my $result = $self->openapi->validate_request($self->tx->req);
   return $self->test('ok', $result, $desc);
 }
 

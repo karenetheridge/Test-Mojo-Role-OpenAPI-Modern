@@ -19,7 +19,7 @@ subtest 'openapi object on the test itself' => sub {
     ->with_roles('+OpenAPI::Modern')
     ->openapi($::openapi);
 
-  $t->post_ok('/foo/hello')
+  $t->post_ok('/foo/hello', json => {})
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
@@ -42,7 +42,7 @@ subtest 'openapi object is constructed using provided configs' => sub {
   is($t->openapi->document_get('/info/title'), 'Test API using overridden configs',
     'test role constructs its own OpenAPI::Modern object');
 
-  $t->post_ok('/foo/hello')
+  $t->post_ok('/foo/hello', json => {})
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
