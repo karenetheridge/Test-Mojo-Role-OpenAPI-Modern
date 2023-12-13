@@ -53,6 +53,18 @@ sub response_valid ($self, $desc = 'response is valid') {
   return $self->test('ok', $self->response_validation_result, $desc);
 }
 
+sub request_not_valid ($self, $desc = 'request is not valid') {
+  return $self->test('ok', !$self->request_validation_result, $desc);
+}
+
+sub response_not_valid ($self, $desc = 'response is not valid') {
+  return $self->test('ok', !$self->response_validation_result, $desc);
+}
+
+# I'm not sure yet which names are best, why not go for both?
+sub request_invalid { goto \&request_not_valid }
+sub response_invalid { goto \&response_not_valid }
+
 sub request_validation_result ($self) {
   my $result = $self->_openapi_stash('request_result');
   return $result if $result;
@@ -68,6 +80,7 @@ sub response_validation_result ($self) {
 
   my $options = { request => $self->tx->req };
   $result = $self->openapi->validate_response($self->tx->res, $options);
+
   $self->_openapi_stash(response_result => $result);
   return $result;
 }
@@ -151,10 +164,18 @@ or re-uses the object from the application itself if that plugin is applied.
 Passes C<< $t->tx->req >> to L<OpenAPI::Modern/validate_request>, as in
 L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean test result.
 
+=head2 request_not_valid, request_invalid
+
+The inverse of L</request_valid>.
+
 =head2 response_valid
 
 Passes C<< $t->tx->res >> to L<OpenAPI::Modern/validate_response> as in
 L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean test result.
+
+=head2 response_not_valid, response_invalid
+
+The inverse of L</response_valid>.
 
 =head2 request_validation_result
 

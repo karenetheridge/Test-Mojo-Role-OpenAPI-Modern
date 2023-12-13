@@ -64,7 +64,13 @@ our $openapi = OpenAPI::Modern->new(
 );
 
 our $app = Mojolicious->new;
-$app->routes->post('/foo/:foo_id' => sub ($c) { $c->render(json => { status => 'ok' }) });
-
+$app->routes->post('/foo/:foo_id' => sub ($c) {
+  if ($c->req->json) {
+    $c->render(json => { status => 'ok' });
+  }
+  else {
+    $c->render(text => 'kaboom', status => 400);
+  }
+});
 
 1;
