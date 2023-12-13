@@ -1,6 +1,6 @@
 Revision history for Test-Mojo-Role-OpenAPI-Modern
 
-{{$NEXT}}
+0.004     2023-12-13 05:07:03Z
           - new interfaces request_invalid, request_not_valid,
             response_invalid, response_not_valid
 

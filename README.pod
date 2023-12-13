@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.003
+version 0.004
 
 =head1 SYNOPSIS
 
@@ -84,10 +84,18 @@ or re-uses the object from the application itself if that plugin is applied.
 Passes C<< $t->tx->req >> to L<OpenAPI::Modern/validate_request>, as in
 L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean test result.
 
+=head2 request_not_valid, request_invalid
+
+The inverse of L</request_valid>.
+
 =head2 response_valid
 
 Passes C<< $t->tx->res >> to L<OpenAPI::Modern/validate_response> as in
 L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean test result.
+
+=head2 response_not_valid, response_invalid
+
+The inverse of L</response_valid>.
 
 =head2 request_validation_result
 
