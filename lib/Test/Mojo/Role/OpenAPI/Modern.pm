@@ -45,6 +45,7 @@ has 'openapi' => sub ($self) {
 # keys being tracked here:
 # - request_result
 # - response_result
+# - validation_options
 sub _openapi_stash ($self, @data) { Mojo::Util::_stash(_openapi_stash => $self, @data) }
 
 after _request_ok => sub ($self, @args) {
@@ -90,8 +91,8 @@ sub request_validation_result ($self) {
   my $result = $self->_openapi_stash('request_result');
   return $result if defined $result;
 
-  $result = $self->openapi->validate_request($self->tx->req);
-  $self->_openapi_stash(request_result => $result);
+  $result = $self->openapi->validate_request($self->tx->req, my $options = {});
+  $self->_openapi_stash(request_result => $result, validation_options => $options);
   return $result;
 }
 
@@ -99,11 +100,21 @@ sub response_validation_result ($self) {
   my $result = $self->_openapi_stash('response_result');
   return $result if defined $result;
 
-  my $options = { request => $self->tx->req };
-  $result = $self->openapi->validate_response($self->tx->res, $options);
+  my $options = $self->_openapi_stash('validation_options');
+  $self->_openapi_stash(validation_options => $options = {}) if not $options;
+  $options->{request} = $self->tx->req;
 
+  $result = $self->openapi->validate_response($self->tx->res, $options);
   $self->_openapi_stash(response_result => $result);
   return $result;
+}
+
+sub operation_id_is ($self, $operation_id, $desc = undef) {
+  my $validation_options = $self->_openapi_stash('validation_options');
+  return $self->test('fail', 'operation_id was captured during the last validation')
+    if not $validation_options->{operation_id};
+
+  $self->test('is', $validation_options->{operation_id}, $operation_id, $desc // 'operation_id is '.$operation_id);
 }
 
 1;
@@ -160,7 +171,8 @@ __END__
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
-    ->response_valid;
+    ->response_valid
+    ->operation_id_is('my_foo_request');
 
   $t->post_ok('/foo/123', form => { salutation => 'hi' })
     ->status_is(400)
@@ -213,6 +225,11 @@ Note that normally you shouldn't be testing for an invalid response, as all resp
 application should be valid according to the specification, but this method is provided for
 completeness. Instead, check for invalid responses right in your application (see
 L<Mojolicious::Plugin::OpenAPI::Modern>) and log an error when this occurs.
+
+=head2 operation_id_is
+
+Test the C<operationId> corresponding to the last validated request or response (the unique string
+used to identify the operation). See L<https://spec.openapis.org/oas/v3.1.0#operation-object>.
 
 =head2 request_validation_result
 

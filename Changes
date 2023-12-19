@@ -3,6 +3,7 @@ Revision history for Test-Mojo-Role-OpenAPI-Modern
 {{$NEXT}}
           - request_invalid, response_invalid may now take error strings to
             search for
+          - new method operation_id_is
 
 0.004     2023-12-13 05:07:03Z
           - new interfaces request_invalid, request_not_valid,

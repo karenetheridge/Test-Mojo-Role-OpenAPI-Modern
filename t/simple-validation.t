@@ -25,7 +25,8 @@ subtest 'openapi object on the test itself' => sub {
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
-    ->response_valid;
+    ->response_valid
+    ->operation_id_is('my_foo_request');
 
   my $request_result = $t->request_validation_result;
   $t->request_valid;
@@ -37,6 +38,13 @@ subtest 'openapi object on the test itself' => sub {
     'different result object is returned for a different request');
   is(refaddr($new_request_result), refaddr($t->request_validation_result),
     'same result object is returned for the second request again (invalid result)');
+
+  $t->response_valid
+    ->operation_id_is('my_foo_request');
+
+  $t->post_ok('/foo/hello', json => {})
+    ->response_valid
+    ->operation_id_is('my_foo_request', 'validating the response without validating the request still finds the operation_id');
 };
 
 subtest 'openapi object is constructed using provided configs' => sub {
