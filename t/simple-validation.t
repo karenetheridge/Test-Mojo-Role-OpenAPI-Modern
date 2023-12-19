@@ -30,13 +30,13 @@ subtest 'openapi object on the test itself' => sub {
   my $request_result = $t->request_validation_result;
   $t->request_valid;
   is(refaddr($request_result), refaddr($t->request_validation_result),
-    'same result object is returned the second time');
+    'same result object is returned the second time (valid result)');
 
-  $t->post_ok('/foo/123', json => {});
+  $t->post_ok('/foo/hello', json => {});
   isnt(refaddr($request_result), refaddr(my $new_request_result = $t->request_validation_result),
     'different result object is returned for a different request');
   is(refaddr($new_request_result), refaddr($t->request_validation_result),
-    'same result object is returned for the second request again');
+    'same result object is returned for the second request again (invalid result)');
 
   $t->post_ok('/foo/123', form => { salutation => 'hi' })
     ->status_is(400)

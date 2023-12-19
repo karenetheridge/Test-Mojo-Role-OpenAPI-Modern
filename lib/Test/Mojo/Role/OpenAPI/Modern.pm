@@ -70,7 +70,7 @@ sub response_invalid { goto \&response_not_valid }
 
 sub request_validation_result ($self) {
   my $result = $self->_openapi_stash('request_result');
-  return $result if $result;
+  return $result if defined $result;
 
   $result = $self->openapi->validate_request($self->tx->req);
   $self->_openapi_stash(request_result => $result);
@@ -79,7 +79,7 @@ sub request_validation_result ($self) {
 
 sub response_validation_result ($self) {
   my $result = $self->_openapi_stash('response_result');
-  return $result if $result;
+  return $result if defined $result;
 
   my $options = { request => $self->tx->req };
   $result = $self->openapi->validate_response($self->tx->res, $options);
