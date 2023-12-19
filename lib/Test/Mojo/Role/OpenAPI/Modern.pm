@@ -13,6 +13,9 @@ use if "$]" >= 5.022, experimental => 're_strict';
 no if "$]" >= 5.031009, feature => 'indirect';
 no if "$]" >= 5.033001, feature => 'multidimensional';
 no if "$]" >= 5.033006, feature => 'bareword_filehandles';
+use JSON::Schema::Modern 0.577;
+use OpenAPI::Modern 0.054;
+use List::Util 'any';
 use namespace::clean;
 
 use Mojo::Base -role, -signatures;
@@ -56,12 +59,27 @@ sub response_valid ($self, $desc = 'response is valid') {
   return $self->test('ok', $self->response_validation_result, $desc);
 }
 
-sub request_not_valid ($self, $desc = 'request is not valid') {
-  return $self->test('ok', !$self->request_validation_result, $desc);
+# expected_error can either be the 'recommended_response' or any error string in the result.
+sub request_not_valid ($self, $expected_error = undef, $desc = undef) {
+  my $result = $self->request_validation_result;
+  if ($expected_error and not $result) {
+    $desc //= 'request validation error matches';
+    return $self->test('pass', $desc) if $expected_error eq $result->recommended_response->[1];
+    return $self->test('ok', (any { $expected_error eq $_ } $result->errors), $desc);
+  }
+
+  return $self->test('ok', !$self->request_validation_result, $desc // 'request is not valid');
 }
 
-sub response_not_valid ($self, $desc = 'response is not valid') {
-  return $self->test('ok', !$self->response_validation_result, $desc);
+# expected_error must match an error string in the result.
+sub response_not_valid ($self, $expected_error = undef, $desc = undef) {
+  my $result = $self->response_validation_result;
+  if ($expected_error and not $result) {
+    return $self->test('ok', (any { $expected_error eq $_ } $result->errors),
+      $desc // 'response validation error matches');
+  }
+
+  return $self->test('ok', !$self->response_validation_result, $desc // 'response is not valid');
 }
 
 # I'm not sure yet which names are best, why not go for both?
@@ -144,6 +162,15 @@ __END__
     ->request_valid
     ->response_valid;
 
+  $t->post_ok('/foo/123', form => { salutation => 'hi' })
+    ->status_is(400)
+    ->request_not_valid('Unsupported Media Type')
+    ->response_not_valid(q{'/response': no response object found for code 400});
+
+  $t->post('/foo/hello')
+    ->status_is(400)
+    ->request_not_valid(q{/request/path: 'wrong type: expected integer, got string'}, 'detected bad path parameter');
+
 =head1 DESCRIPTION
 
 Provides methods on a L<Test::Mojo> object suitable for using L<OpenAPI::Modern> to validate the
@@ -169,7 +196,8 @@ L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean te
 
 =head2 request_not_valid, request_invalid
 
-The inverse of L</request_valid>.
+The inverse of L</request_valid>. May optionally take an error string, which is matched against
+the L<JSON::Schema::Modern::Result/recommended_response>, and all error strings in the result.
 
 =head2 response_valid
 
@@ -178,7 +206,13 @@ L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean t
 
 =head2 response_not_valid, response_invalid
 
-The inverse of L</response_valid>.
+The inverse of L</response_valid>. May optionally take an error string, which is matched against all
+error strings in the result.
+
+Note that normally you shouldn't be testing for an invalid response, as all responses from your
+application should be valid according to the specification, but this method is provided for
+completeness. Instead, check for invalid responses right in your application (see
+L<Mojolicious::Plugin::OpenAPI::Modern>) and log an error when this occurs.
 
 =head2 request_validation_result
 

@@ -42,7 +42,11 @@ paths:
         required: true
         content:
           application/json:
-            schema: {}
+            schema:
+              type: object
+              properties:
+                kaboom:
+                  $ref: '#/$defs/i_do_not_exist'
       responses:
         200:
           description: success
@@ -54,6 +58,8 @@ paths:
                 properties:
                   status:
                     const: ok
+                  kaboom:
+                    $ref: '#/$defs/i_do_not_exist'
 YAML
 
 our $doc_uri = Mojo::URL->new('https://example.com/api');
@@ -66,7 +72,12 @@ our $openapi = OpenAPI::Modern->new(
 our $app = Mojolicious->new;
 $app->routes->post('/foo/:foo_id' => sub ($c) {
   if ($c->req->json) {
-    $c->render(json => { status => 'ok' });
+    if ($c->req->json->{kaboom}) {
+      $c->render(json => { kaboom => $c->req->json->{kaboom} });
+    }
+    else {
+      $c->render(json => { status => 'ok' });
+    }
   }
   else {
     $c->render(text => 'kaboom', status => 400);
