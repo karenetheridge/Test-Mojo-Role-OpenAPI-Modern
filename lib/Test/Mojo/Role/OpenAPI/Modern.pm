@@ -39,6 +39,9 @@ has 'openapi' => sub ($self) {
   die 'openapi object or configs required';
 };
 
+# keys being tracked here:
+# - request_result
+# - response_result
 sub _openapi_stash ($self, @data) { Mojo::Util::_stash(_openapi_stash => $self, @data) }
 
 after _request_ok => sub ($self, @args) {
