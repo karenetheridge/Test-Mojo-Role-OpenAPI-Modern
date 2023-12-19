@@ -35,7 +35,7 @@ paths:
       in: path
       required: true
       schema:
-        pattern: ^[a-z]+$
+        type: integer
     post:
       operationId: my_foo_request
       requestBody:

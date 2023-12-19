@@ -109,7 +109,7 @@ __END__
         in: path
         required: true
         schema:
-          pattern: ^[a-z]+$
+          type: integer
       post:
         operationId: my_foo_request
         requestBody:
@@ -135,7 +135,7 @@ __END__
     ->new('MyApp', { ... })
     ->openapi($openapi);
 
-  $t->post_ok('/foo/hello')
+  $t->post_ok('/foo/123')
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid

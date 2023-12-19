@@ -21,7 +21,7 @@ subtest 'openapi object on the test itself' => sub {
     ->new($::app)
     ->openapi($::openapi);
 
-  $t->post_ok('/foo/hello', json => {})
+  $t->post_ok('/foo/123', json => {})
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
@@ -32,13 +32,13 @@ subtest 'openapi object on the test itself' => sub {
   is(refaddr($request_result), refaddr($t->request_validation_result),
     'same result object is returned the second time');
 
-  $t->post_ok('/foo/hello', json => {});
+  $t->post_ok('/foo/123', json => {});
   isnt(refaddr($request_result), refaddr(my $new_request_result = $t->request_validation_result),
     'different result object is returned for a different request');
   is(refaddr($new_request_result), refaddr($t->request_validation_result),
     'same result object is returned for the second request again');
 
-  $t->post_ok('/foo/hello', form => { salutation => 'hi' })
+  $t->post_ok('/foo/123', form => { salutation => 'hi' })
     ->status_is(400)
     ->content_is('kaboom')
     ->request_not_valid
@@ -74,7 +74,7 @@ subtest 'openapi object is constructed using provided configs' => sub {
   is($t->openapi->document_get('/info/title'), 'Test API using overridden configs',
     'test role constructs its own OpenAPI::Modern object');
 
-  $t->post_ok('/foo/hello', json => {})
+  $t->post_ok('/foo/123', json => {})
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
