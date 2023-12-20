@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.004
+version 0.005
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ version 0.004
         in: path
         required: true
         schema:
-          pattern: ^[a-z]+$
+          type: integer
       post:
         operationId: my_foo_request
         requestBody:
@@ -53,11 +53,21 @@ version 0.004
     ->new('MyApp', { ... })
     ->openapi($openapi);
 
-  $t->post_ok('/foo/hello')
+  $t->post_ok('/foo/123')
     ->status_is(200)
     ->json_is('/status', 'ok')
     ->request_valid
-    ->response_valid;
+    ->response_valid
+    ->operation_id_is('my_foo_request');
+
+  $t->post_ok('/foo/123', form => { salutation => 'hi' })
+    ->status_is(400)
+    ->request_not_valid('Unsupported Media Type')
+    ->response_not_valid(q{'/response': no response object found for code 400});
+
+  $t->post('/foo/hello')
+    ->status_is(400)
+    ->request_not_valid(q{/request/path: 'wrong type: expected integer, got string'}, 'detected bad path parameter');
 
 =head1 DESCRIPTION
 
@@ -86,7 +96,8 @@ L<Mojolicious::Plugin::OpenAPI::Modern/validate_request>, producing a boolean te
 
 =head2 request_not_valid, request_invalid
 
-The inverse of L</request_valid>.
+The inverse of L</request_valid>. May optionally take an error string, which is matched against
+the L<JSON::Schema::Modern::Result/recommended_response>, and all error strings in the result.
 
 =head2 response_valid
 
@@ -95,7 +106,18 @@ L<Mojolicious::Plugin::OpenAPI::Modern/validate_response>, producing a boolean t
 
 =head2 response_not_valid, response_invalid
 
-The inverse of L</response_valid>.
+The inverse of L</response_valid>. May optionally take an error string, which is matched against all
+error strings in the result.
+
+Note that normally you shouldn't be testing for an invalid response, as all responses from your
+application should be valid according to the specification, but this method is provided for
+completeness. Instead, check for invalid responses right in your application (see
+L<Mojolicious::Plugin::OpenAPI::Modern>) and log an error when this occurs.
+
+=head2 operation_id_is
+
+Test the C<operationId> corresponding to the last validated request or response (the unique string
+used to identify the operation). See L<https://spec.openapis.org/oas/v3.1.0#operation-object>.
 
 =head2 request_validation_result
 
