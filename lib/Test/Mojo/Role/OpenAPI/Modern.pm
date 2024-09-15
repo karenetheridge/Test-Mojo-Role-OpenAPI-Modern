@@ -213,6 +213,8 @@ __END__
     ->or->dump_validation_response_result('basic')
     ->operation_id_is('my_foo_request');
 
+  $t->test_openapi_verbose(1);  # automatically dump validation errors on test failure
+
   $t->post_ok('/foo/123', form => { salutation => 'hi' })
     ->status_is(400)
     ->request_not_valid('Unsupported Media Type')
