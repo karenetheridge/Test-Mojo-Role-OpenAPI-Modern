@@ -1,5 +1,7 @@
 Revision history for Test-Mojo-Role-OpenAPI-Modern
 
+{{$NEXT}}
+
 0.006     2024-09-15 17:40:23Z
           - new interfaces dump_request_validation_result,
             dump_request_validation_result which dump validation results, and
