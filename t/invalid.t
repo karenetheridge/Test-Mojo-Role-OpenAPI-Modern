@@ -18,7 +18,8 @@ subtest 'request or response not valid' => sub {
   my $t = Test::Mojo
     ->with_roles('+OpenAPI::Modern')
     ->new($::app)
-    ->openapi($::openapi);
+    ->openapi($::openapi)
+    ->test_openapi_verbose(1);
 
   $t->post_ok('/foo/123', form => { salutation => 'hi' })
     ->status_is(400)
