@@ -20,7 +20,7 @@ use namespace::clean;
 
 use Mojo::Base -role, -signatures;
 
-has 'openapi' => sub ($self) {
+has openapi => sub ($self) {
   # use the plugin's object, if the plugin is being used
   # FIXME: we should be calling $self->app->$_call_if_can, but can() isn't behaving
   my $openapi = eval { $self->app->openapi };
