@@ -320,8 +320,6 @@ Does not emit a test result.
 Lots of features are still to come, including:
 
 =for :list
-* C<request_invalid>, C<response_invalid> test methods, including a mechanism for providing the
-  expected validation error(s)
 * stashing the validation results on the test object for reuse or diagnostic printing
 * integration with L<Mojolicious::Plugin::OpenAPI::Modern>, including sharing the openapi object and
   customization options that are set in the application
