@@ -55,13 +55,13 @@ after _request_ok => sub ($self, @args) {
 };
 
 sub request_valid ($self, $desc = 'request is valid') {
-  $self->test('ok', $self->request_validation_result, $desc);
+  $self->test('ok', $self->request_validation_result->valid, $desc);
   $self->dump_request_validation_result if not $self->success and $self->test_openapi_verbose;
   return $self;
 }
 
 sub response_valid ($self, $desc = 'response is valid') {
-  $self->test('ok', $self->response_validation_result, $desc);
+  $self->test('ok', $self->response_validation_result->valid, $desc);
   $self->dump_response_validation_result if not $self->success and $self->test_openapi_verbose;
   return $self;
 }
@@ -69,7 +69,7 @@ sub response_valid ($self, $desc = 'response is valid') {
 # expected_error can either be the 'recommended_response' or any error string in the result.
 sub request_not_valid ($self, $expected_error = undef, $desc = undef) {
   my $result = $self->request_validation_result;
-  if ($expected_error and not $result) {
+  if ($expected_error and not $result->valid) {
     $desc //= 'request validation error matches';
     if ($expected_error eq $result->recommended_response->[1]) {
       $self->test('pass', $desc);
@@ -79,7 +79,7 @@ sub request_not_valid ($self, $expected_error = undef, $desc = undef) {
     }
   }
   else {
-    $self->test('ok', !$self->request_validation_result, $desc // 'request is not valid');
+    $self->test('ok', !$self->request_validation_result->valid, $desc // 'request is not valid');
   }
 
   $self->dump_request_validation_result if not $self->success and $self->test_openapi_verbose;
@@ -89,12 +89,12 @@ sub request_not_valid ($self, $expected_error = undef, $desc = undef) {
 # expected_error must match an error string in the result.
 sub response_not_valid ($self, $expected_error = undef, $desc = undef) {
   my $result = $self->response_validation_result;
-  if ($expected_error and not $result) {
+  if ($expected_error and not $result->valid) {
     $self->test('ok', (any { $expected_error eq $_ } $result->errors),
       $desc // 'response validation error matches');
   }
   else {
-    $self->test('ok', !$self->response_validation_result, $desc // 'response is not valid');
+    $self->test('ok', !$self->response_validation_result->valid, $desc // 'response is not valid');
   }
 
   $self->dump_response_validation_result if not $self->success and $self->test_openapi_verbose;
