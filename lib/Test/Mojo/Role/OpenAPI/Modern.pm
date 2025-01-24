@@ -336,6 +336,6 @@ Lots of features are still to come, including:
 * L<https://json-schema.org>
 * L<https://www.openapis.org/>
 * L<https://learn.openapis.org/>
-* L<https://spec.openapis.org/oas/v3.1.0>
+* L<https://spec.openapis.org/oas/latest.html>
 
 =cut
