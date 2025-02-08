@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.007
+version 0.008
 
 =head1 SYNOPSIS
 
@@ -174,10 +174,6 @@ Lots of features are still to come, including:
 
 =item *
 
-C<request_invalid>, C<response_invalid> test methods, including a mechanism for providing the expected validation error(s)
-
-=item *
-
 stashing the validation results on the test object for reuse or diagnostic printing
 
 =item *
@@ -228,7 +224,7 @@ L<https://learn.openapis.org/>
 
 =item *
 
-L<https://spec.openapis.org/oas/v3.1.0>
+L<https://spec.openapis.org/oas/latest.html>
 
 =back
 
