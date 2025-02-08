@@ -1,6 +1,8 @@
 Revision history for Test-Mojo-Role-OpenAPI-Modern
 
 {{$NEXT}}
+          - update another prerequisite version to avoid other
+            incompatibilities
 
 0.008     2025-02-08 19:05:41Z
           - update some prerequisite versions for interface compatibility
