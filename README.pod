@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.009
+version 0.010
 
 =head1 SYNOPSIS
 
@@ -92,6 +92,10 @@ information on how to customize your validation and provide the specification do
 If not provided, the object is constructed using configuration values passed to the application
 under the C<openapi> key (see L<Test::Mojo/new>), as for L<Mojolicious::Plugin::OpenAPI::Modern>,
 or re-uses the object from the application itself if that plugin is applied.
+
+Note that for testing purposes, you should use a relative URI for C<openapi_uri>, otherwise request
+URIs will not match. This is because L<Test::Mojo> uses a randomly-generated port for test requests,
+which cannot be predicted in advance to be included in C<openapi_uri>.
 
 =head2 test_openapi_verbose
 
