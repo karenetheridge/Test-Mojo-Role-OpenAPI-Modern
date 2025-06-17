@@ -65,7 +65,7 @@ paths:
                     $ref: '#/$defs/i_do_not_exist'
 YAML
 
-our $doc_uri = Mojo::URL->new('https://example.com/api');
+our $doc_uri = Mojo::URL->new('/api');
 
 our $openapi = OpenAPI::Modern->new(
   openapi_uri => $doc_uri,

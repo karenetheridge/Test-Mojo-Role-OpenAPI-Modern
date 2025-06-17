@@ -245,6 +245,10 @@ If not provided, the object is constructed using configuration values passed to 
 under the C<openapi> key (see L<Test::Mojo/new>), as for L<Mojolicious::Plugin::OpenAPI::Modern>,
 or re-uses the object from the application itself if that plugin is applied.
 
+Note that for testing purposes, you should use a relative URI for C<openapi_uri>, otherwise request
+URIs will not match. This is because L<Test::Mojo> uses a randomly-generated port for test requests,
+which cannot be predicted in advance to be included in C<openapi_uri>.
+
 =head2 test_openapi_verbose
 
 When true, failing request and response validation tests will dump the actual validation result via
