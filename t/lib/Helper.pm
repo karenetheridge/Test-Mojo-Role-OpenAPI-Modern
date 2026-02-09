@@ -38,7 +38,8 @@ paths:
       in: path
       required: true
       schema:
-        type: integer
+        type: string
+        maxLength: 1
     post:
       operationId: my_foo_request
       requestBody:
