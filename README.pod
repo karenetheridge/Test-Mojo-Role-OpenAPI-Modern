@@ -8,7 +8,7 @@ Test::Mojo::Role::OpenAPI::Modern - Test::Mojo role providing access to an OpenA
 
 =head1 VERSION
 
-version 0.010
+version 0.011
 
 =head1 SYNOPSIS
 
@@ -231,6 +231,14 @@ L<https://learn.openapis.org/>
 L<https://spec.openapis.org/oas/latest.html>
 
 =back
+
+=head1 GIVING THANKS
+
+=for stopwords MetaCPAN GitHub
+
+If you found this module to be useful, please show your appreciation by
+adding a +1 in L<MetaCPAN|https://metacpan.org/dist/Test-Mojo-Role-OpenAPI-Modern>
+and a star in L<GitHub|https://github.com/karenetheridge/Test-Mojo-Role-OpenAPI-Modern>.
 
 =head1 SUPPORT
 
