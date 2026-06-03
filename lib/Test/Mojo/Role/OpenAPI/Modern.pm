@@ -16,8 +16,8 @@ no if "$]" >= 5.033001, feature => 'multidimensional';
 no if "$]" >= 5.033006, feature => 'bareword_filehandles';
 no if "$]" >= 5.041009, feature => 'smartmatch';
 no feature 'switch';
-use JSON::Schema::Modern 0.577;
-use OpenAPI::Modern 0.054;
+use JSON::Schema::Modern 0.638;
+use OpenAPI::Modern 0.133;
 use List::Util 'any';
 use namespace::clean;
 
