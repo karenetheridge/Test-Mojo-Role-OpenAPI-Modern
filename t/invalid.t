@@ -19,8 +19,8 @@ use Test::Deep;
 subtest 'request or response not valid' => sub {
   my $t = Test::Mojo
     ->with_roles('+OpenAPI::Modern')
-    ->new($::app)
-    ->openapi($::openapi)
+    ->new($::app)               # defined in t/lib/Helper.pm
+    ->openapi($::openapi)       # ""
     ->test_openapi_verbose(1);
 
   $t->post_ok('/foo/123', {'Content-Type' => 'application/furble'} => '!!!')
