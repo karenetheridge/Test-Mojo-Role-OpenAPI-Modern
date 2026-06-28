@@ -1,6 +1,6 @@
 Revision history for Test-Mojo-Role-OpenAPI-Modern
 
-{{$NEXT}}
+0.013     2026-06-28 21:08:39Z
           - update tests for changes in OpenAPI::Modern 0.139
 
 0.012     2026-06-03 19:07:35Z
