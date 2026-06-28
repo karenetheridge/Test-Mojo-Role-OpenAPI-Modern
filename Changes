@@ -1,6 +1,7 @@
 Revision history for Test-Mojo-Role-OpenAPI-Modern
 
 {{$NEXT}}
+          - update tests for changes in OpenAPI::Modern 0.139
 
 0.012     2026-06-03 19:07:35Z
           - update tests for changes in JSON::Schema::Modern 0.638
